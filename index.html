@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bonjour — Page d'accueil</title>
+    <style>
+        :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;}
+        body{display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f6f8fb}
+        .card{background:white;padding:28px;border-radius:12px;box-shadow:0 6px 20px rgba(20,30,50,0.08);width:100%;max-width:440px}
+        h1{margin:0 0 14px;font-size:20px}
+        label{display:block;font-size:13px;margin-top:10px;color:#333}
+        input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #dbe4f0;margin-top:6px;font-size:15px;box-sizing:border-box}
+        button{margin-top:16px;padding:10px 14px;border-radius:10px;border:0;background:#2563eb;color:white;font-weight:600;cursor:pointer}
+        button:active{transform:translateY(1px)}
+        .greeting{margin-top:18px;padding:12px;border-radius:10px;background:#f0f7ff;border:1px solid #d9eaff;font-size:16px;display:none;align-items:center}
+        .smile{font-size:20px;margin-left:8px}
+        .small{font-size:13px;color:#666;margin-top:8px}
+    </style>
+</head>
+<body>
+<main class="card" role="main">
+    <h1>Entrer votre nom et prénom</h1>
+    <form id="helloForm" autocomplete="on">
+        <label for="prenom">Prénom</label>
+        <input id="prenom" name="prenom" type="text" placeholder="Ex. Amine" required />
+
+        <label for="nom">Nom</label>
+        <input id="nom" name="nom" type="text" placeholder="Ex. HLAL" required />
+
+        <button type="submit">Dire bonjour</button>
+    </form>
+
+    <div id="greeting" class="greeting" aria-live="polite">
+        <span id="greetingText"></span>
+        <span class="smile" aria-hidden="true">😊</span>
+    </div>
+
+    <p class="small">Le message apparaîtra sur cette même page après avoir cliqué sur « Dire bonjour ».</p>
+</main>
+
+<script>
+    const form = document.getElementById('helloForm');
+    const greetingBox = document.getElementById('greeting');
+    const greetingText = document.getElementById('greetingText');
+
+    function escapeHtml(s){
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      const prenom = (document.getElementById('prenom').value || '').trim();
+      const nom = (document.getElementById('nom').value || '').trim();
+
+      if(!prenom && !nom){
+        greetingBox.style.display = 'none';
+        return;
+      }
+
+      const displayName = [prenom, nom].filter(Boolean).join(' ');
+      greetingText.textContent = `Bonjour ${escapeHtml(displayName)} !`;
+      // show with a tiny fade-in
+      greetingBox.style.opacity = 0;
+      greetingBox.style.display = 'flex';
+      let t = 0;
+      const fade = setInterval(()=>{ t += 0.08; greetingBox.style.opacity = Math.min(t,1); if(t>=1) clearInterval(fade); },16);
+
+      // optionally clear inputs after greeting
+      // form.reset();
+    });
+</script>
+</body>
+</html>
